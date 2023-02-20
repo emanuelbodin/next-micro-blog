@@ -1,22 +1,23 @@
-import { Post } from "./post.interface";
-import PostList from "../../ui/posts/PostList";
-import { get } from "@/utils/fetch";
-import CreatePostForm from "./components/CreatePostForm";
+import { getServerSession } from 'next-auth/next'
+import PostList from '@/ui/posts/PostList'
+import CreatePostForm from './components/CreatePostForm'
+import prisma from '@/lib/prisma'
 
 const getPosts = async () => {
-  const data = await get<{ items: Post[] }>(
-    "http://127.0.0.1:8090/api/collections/posts/records?page=1&perPage=30"
-  );
-  return data?.items ?? [];
-};
+  const posts = await prisma.post.findMany()
+
+  return posts
+}
 
 export default async function PostsPage() {
-  const posts = await getPosts();
+  const posts = await getPosts()
+  const session = await getServerSession()
+  const email = session?.user?.email
   return (
     <>
       <h1>Posts page</h1>
-      <CreatePostForm />
+      {email && <CreatePostForm userEmail={email} />}
       <PostList posts={posts} />
     </>
-  );
+  )
 }

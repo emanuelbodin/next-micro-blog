@@ -1,14 +1,12 @@
-version: "3.7"
+version: '3.7'
 services:
-  mongodb:
-    image: mongo:latest
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
+  postgres:
+    image: postgres:latest
+    restart: always
     ports:
-      - 27017:27017
+      - 5432:5432
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
     volumes:
-      - mongodb_data_container:/data/db
-
-volumes:
-  mongodb_data_container:
+      - ./postgres-data:/var/lib/postgresql/data

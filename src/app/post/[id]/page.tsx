@@ -1,43 +1,35 @@
-import pb from "@/utils/pocketbase";
-import { Post, Comment } from "@/app/post/post.interface";
-import PostItem from "../../../ui/posts/PostItem";
-import CommentList from "../../../ui/posts/CommentList";
-import { get } from "@/utils/fetch";
+import prisma from '@/lib/prisma'
+import PostItem from '@/ui/posts/PostItem'
+import CommentList from '@/ui/posts/CommentList'
 
-const getPostById = async (postId: string) => {
-  const post = await get<Post>(
-    `http://127.0.0.1:8090/api/collections/posts/records/${postId}`
-  );
-  return post;
-};
-
-const getCommentsForPost = async (postId: string) => {
-  const data = await pb
-    .collection("comments")
-    .getList<Comment>(1, 50, { filter: `postId="${postId}"` });
-
-  return data?.items ?? [];
-};
+const getPostById = async (postId: number) => {
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+    include: {
+      comments: true,
+    },
+  })
+  return post
+}
 
 export default async function PostPage({ params }: { params: { id: string } }) {
-  const postId = params.id;
-  const postData = getPostById(postId);
-  const commentsData = getCommentsForPost(postId);
-
-  const [post, comments] = await Promise.all([postData, commentsData]);
-
+  const post = await getPostById(parseInt(params.id))
   return (
     <>
       <h1>Post page</h1>
-      <PostItem
-        id={post.id}
-        title={post.title}
-        body={post.body}
-        userId={post.userId}
-        created={post.created}
-        updated={post.updated}
-      />
-      <CommentList comments={comments} />
+      {post && (
+        <>
+          <PostItem
+            id={post.id}
+            title={post.title}
+            body={post.body}
+            userEmail={post.userEmail}
+            createdAt={post.createdAt}
+            updatedAt={post.updatedAt}
+          />
+          <CommentList comments={post.comments ?? []} />
+        </>
+      )}
     </>
-  );
+  )
 }

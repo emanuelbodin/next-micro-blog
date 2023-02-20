@@ -1,24 +1,27 @@
-import PostItem from "./PostItem";
-import { Post } from "../../app/post/post.interface";
+import PostItem from './PostItem'
+import { Post } from '@prisma/client'
 
-export default function PostList({ posts }: { posts: Post[] }) {
+type Props = {
+  posts: Post[]
+}
+
+export default function PostList({ posts }: Props) {
   return (
     <>
-      <h2>All posts</h2>
       <div className="flex flex-col">
-        {!posts.length && "No posts"}
+        {!posts.length && 'No posts'}
         {posts.map((post) => (
           <PostItem
             key={post.id}
             id={post.id}
             title={post.title}
             body={post.body}
-            created={post.created}
-            updated={post.updated}
-            userId={post.userId}
+            createdAt={post.createdAt}
+            updatedAt={post.updatedAt}
+            userEmail={post.userEmail}
           />
         ))}
       </div>
     </>
-  );
+  )
 }
