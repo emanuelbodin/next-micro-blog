@@ -1,11 +1,15 @@
 import PostList from '@/ui/posts/PostList'
-import prisma from '@/lib/prisma'
+import { prisma } from '@/server/db'
 
 const getPostsForUser = async (userEmail: string) => {
-  const posts = await prisma.post.findMany({
-    where: { userEmail },
-  })
-  return posts
+  try {
+    const posts = await prisma.post.findMany({
+      where: { userEmail },
+    })
+    return posts
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 type Props = {
@@ -21,7 +25,7 @@ export default async function PostForUserPage({ params }: Props) {
   return (
     <>
       <h1>Posts page by {userEmail}</h1>
-      <PostList posts={posts} />
+      {posts && <PostList posts={posts} />}
     </>
   )
 }

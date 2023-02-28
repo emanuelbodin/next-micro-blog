@@ -1,6 +1,13 @@
-"use client";
-import { SessionProvider } from "next-auth/react";
+'use client'
+import { SessionProvider } from 'next-auth/react'
+import { ClientProvider } from '@/utils/TrpcClient'
 
-export default function Providers({ children }: { children: React.ReactNode }) {
-  return <SessionProvider>{children}</SessionProvider>;
+const Providers = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <SessionProvider>
+      <ClientProvider>{children}</ClientProvider>
+    </SessionProvider>
+  )
 }
+
+export default Providers

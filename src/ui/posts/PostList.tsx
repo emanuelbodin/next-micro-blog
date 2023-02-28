@@ -1,8 +1,7 @@
-import PostItem from './PostItem'
-import { Post } from '@prisma/client'
+import PostItem, { UserPostItem } from './PostItem'
 
 type Props = {
-  posts: Post[]
+  posts: UserPostItem[]
 }
 
 export default function PostList({ posts }: Props) {
@@ -14,11 +13,13 @@ export default function PostList({ posts }: Props) {
           <PostItem
             key={post.id}
             id={post.id}
-            title={post.title}
             body={post.body}
             createdAt={post.createdAt}
             updatedAt={post.updatedAt}
             userEmail={post.userEmail}
+            imgSrc={post.imgSrc}
+            fullNameUser={post.fullNameUser}
+            userId={post.userId}
           />
         ))}
       </div>
